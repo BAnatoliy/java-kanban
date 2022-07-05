@@ -4,25 +4,25 @@ import TZ_3.Constant.Status;
 
 public class SubTask extends Task {
 
-    private int epic_id;
+    private int epicId;
 
-    public SubTask(String title, String description, Status status, int epic_id) {
+    public SubTask(String title, String description, Status status, int epicId) {
         super(title, description, status);
-        this.epic_id = epic_id;
+        this.epicId = epicId;
     }
 
-    public int getEpic_id() {
-        return epic_id;
+    public int getEpicId() {
+        return epicId;
     }
 
-    public void setEpic_id(int epic_id) {
-        this.epic_id = epic_id;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override
     public String toString() {
         return "Subtask{" +
-                "epic_id=" + epic_id +
+                "epic_id=" + epicId +
                 ", task_id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +

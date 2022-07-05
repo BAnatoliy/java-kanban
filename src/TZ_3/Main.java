@@ -1,8 +1,11 @@
-package TZ_3.Task;
+package TZ_3;
 
 import TZ_3.Constant.Status;
 import TZ_3.Service.PrintConsoleService;
 import TZ_3.Service.TaskManagerService;
+import TZ_3.Task.Epic;
+import TZ_3.Task.SubTask;
+import TZ_3.Task.Task;
 
 import java.util.List;
 
@@ -18,8 +21,8 @@ public class Main {
         taskManagerService.addTask(task);
         taskManagerService.addTask(task2);
 
-        Epic epic = new Epic("Epic 1", "description Epic 1"); //Status.NEW
-        Epic epic2 = new Epic("Epic 2", "description Epic 2"); //Status.NEW
+        Epic epic = new Epic("Epic 1", "description Epic 1", Status.NEW); //Status.NEW
+        Epic epic2 = new Epic("Epic 2", "description Epic 2", Status.NEW); //Status.NEW
 
         taskManagerService.addEpic(epic);
         taskManagerService.addEpic(epic2);
@@ -52,7 +55,7 @@ public class Main {
         printConsoleService.printEpics(epics);
         printConsoleService.printSubTasks(subTasks);
         System.out.println("----------------");
-        printConsoleService.printSubtasksOfEpic(epic.title, subTasks2);
+        printConsoleService.printSubtasksOfEpic(epic.getTitle(), subTasks2);
 
         System.out.println("----------------");
 
@@ -71,7 +74,7 @@ public class Main {
 
         // Задаем новые объекты для замены старых
         Task task3 = new Task("Task 2.1", "description Task 2", Status.DONE);
-        Epic epic3 = new Epic("Epic 2.1", "description Epic 2"); //Status.NEW
+        Epic epic3 = new Epic("Epic 2.1", "description Epic 2", Status.NEW); //Status.NEW
         SubTask subTask7 = new SubTask("SubTask 5.1", "description Subtask 5", Status.IN_PROGRESS, epic2.getId());
 
         // Обновление (замена старых объектов новыми)
@@ -88,7 +91,7 @@ public class Main {
         // Печать всех Задач и Подзадач Эпика3
         printConsoleService.printTasks(tasks3);
         printConsoleService.printSubTasks(subTasks3);
-        printConsoleService.printSubtasksOfEpic(epic3.title, subTasks3_2);
+        printConsoleService.printSubtasksOfEpic(epic3.getTitle(), subTasks3_2);
         printConsoleService.printEpics(epics3);
         System.out.println("----------------");
 
@@ -96,6 +99,23 @@ public class Main {
         printConsoleService.printTask(taskManagerService.getTask(task3.getId()));
         printConsoleService.printEpic(taskManagerService.getEpic(epic3.getId()));
         printConsoleService.printSubTask(taskManagerService.getSubTask(subTask7.getId()));
+
+        // Создание эпика со статусом Done (без Субтасков), печать его нового статуса исходя из условий задачи (NEW)
+        System.out.println("----------------");
+        System.out.println("----------------");
+
+        Epic epic4 = new Epic("Epic 27", "description Epic 27", Status.DONE);
+        taskManagerService.addEpic(epic4);
+        List<Epic> epics4 = taskManagerService.getEpics();
+        printConsoleService.printEpics(epics4);
+        System.out.println(epic4.getSubTaskIds());
+
+        // Печать списка Эпиков после удаления всех Субтасков
+        System.out.println("----------------");
+        System.out.println("----------------");
+        taskManagerService.deleteAllSubTasks();
+        List<Epic> epics5 = taskManagerService.getEpics();
+        printConsoleService.printEpics(epics5);
 
     }
 
