@@ -110,7 +110,11 @@ public class TaskManagerService {
 
     // Удаление Эпика по идентификатору
     public void deleteEpic(int taskId) {
+        for (Integer i : epics.get(taskId).getSubTaskIds()) {
+            subTasks.remove(i);
+        }
         epics.remove(taskId);
+
     }
 
     // Удаление СубТаска по идентификатору

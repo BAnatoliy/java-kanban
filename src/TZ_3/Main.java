@@ -27,7 +27,7 @@ public class Main {
         taskManagerService.addEpic(epic);
         taskManagerService.addEpic(epic2);
 
-        SubTask subTask = new SubTask("SubTask1", "description Subtask1", Status.NEW, epic.getId());
+        SubTask subTask = new SubTask("SubTask1", "description Subtask1", Status.IN_PROGRESS, epic.getId());
         SubTask subTask2 = new SubTask("SubTask2", "description Subtask2", Status.DONE, epic2.getId());
         SubTask subTask3 = new SubTask("SubTask3", "description Subtask3", Status.DONE, epic2.getId());
         SubTask subTask4 = new SubTask("SubTask4", "description Subtask4", Status.NEW, epic2.getId());
@@ -110,13 +110,20 @@ public class Main {
         printConsoleService.printEpics(epics4);
         System.out.println(epic4.getSubTaskIds());
 
+        // Печать списка эпиков после удаления эпика по идентификатору
+        System.out.println("__________________");
+        taskManagerService.deleteEpic(3);
+        List<Epic> epics6 = taskManagerService.getEpics();
+        List<SubTask> subTasks4 = taskManagerService.getSubtask();
+        printConsoleService.printEpics(epics6);
+        printConsoleService.printSubTasks(subTasks4);
+
         // Печать списка Эпиков после удаления всех Субтасков
         System.out.println("----------------");
         System.out.println("----------------");
         taskManagerService.deleteAllSubTasks();
         List<Epic> epics5 = taskManagerService.getEpics();
         printConsoleService.printEpics(epics5);
-
     }
 
 }
