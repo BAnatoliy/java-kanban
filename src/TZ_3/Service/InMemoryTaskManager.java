@@ -7,20 +7,22 @@ import TZ_3.Task.Task;
 
 import java.util.*;
 
-public class TaskManagerService {
-    private Map<Integer, Task> tasks = new HashMap<>();
-    private Map<Integer, SubTask> subTasks = new HashMap<>();
-    private Map<Integer, Epic> epics = new HashMap<>();
+public class InMemoryTaskManager implements TaskManager {
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, SubTask> subTasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
 
     int generationTaskId = 0;
 
     // Добавление Таск
+    @Override
     public void addTask(Task task) {
         int taskId = generationTaskId++;
         task.setId(taskId);
         tasks.put(task.getId(), task);
     }
     // Добавление Эпика
+    @Override
     public void addEpic(Epic epic) {
         int epicId = generationTaskId++;
         epic.setId(epicId);
@@ -28,6 +30,7 @@ public class TaskManagerService {
         updateEpicStatus(epic);
     }
     // Добавление Субтаск
+    @Override
     public void addSubTask(SubTask subTask) {
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
@@ -45,12 +48,14 @@ public class TaskManagerService {
     }
 
     // Обновление Таска (замена старого объекта новым)
+    @Override
     public void updateTask(Task task, int taskId) {
         task.setId(taskId);
         tasks.put(task.getId(), task);
     }
 
     // Обновление Эпика (замена старого объекта новым)
+    @Override
     public void updateEpic(Epic epic, int epicId) {
         epic.setId(epicId);
         epic.setSubTaskIds(epics.get(epicId).getSubTaskIds());
@@ -58,6 +63,7 @@ public class TaskManagerService {
     }
 
     // Обновление СубТаска (замена старого объекта новым)
+    @Override
     public void updateSubTask(SubTask subTask, int subTaskId) {
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
@@ -71,28 +77,39 @@ public class TaskManagerService {
         updateEpicStatus(epic);
     }
 
+    @Override
     public Task getTask(int taskId) {
+        Managers.getDefaultHistory().addHistoryTasks(tasks.get(taskId));
         return tasks.get(taskId);
     }
 
+    @Override
     public Epic getEpic(int taskId) {
+        Managers.getDefaultHistory().addHistoryTasks(epics.get(taskId));
         return epics.get(taskId);
     }
 
+    @Override
     public SubTask getSubTask(int taskId) {
+        Managers.getDefaultHistory().addHistoryTasks(subTasks.get(taskId));
         return subTasks.get(taskId);
     }
+
     // Удаление всех Тасков
+    @Override
     public void deleteAllTasks() {
         tasks.clear();
     }
 
     // Удаление всех Эпиков
+    @Override
     public void deleteAllEpics() {
         epics.clear();
+        subTasks.clear();
     }
 
     // Удаление всех СубТасков
+    @Override
     public void deleteAllSubTasks() {
         subTasks.clear();
         for (Epic epic : epics.values()) {
@@ -104,11 +121,13 @@ public class TaskManagerService {
     }
 
     // Удаление Таска по идентификатору
+    @Override
     public void deleteTask(int taskId) {
         tasks.remove(taskId);
     }
 
     // Удаление Эпика по идентификатору
+    @Override
     public void deleteEpic(int taskId) {
         for (Integer i : epics.get(taskId).getSubTaskIds()) {
             subTasks.remove(i);
@@ -118,6 +137,7 @@ public class TaskManagerService {
     }
 
     // Удаление СубТаска по идентификатору
+    @Override
     public void deleteSubTask(int taskId) {
         Epic epic = epics.get(subTasks.get(taskId).getEpicId());
         subTasks.remove(taskId);
@@ -127,24 +147,28 @@ public class TaskManagerService {
     }
 
     // Получение списка Тасков
+    @Override
     public List<Task> getTasks() {
         Collection<Task> values = tasks.values();
         return new ArrayList<>(values);
     }
 
     // Получение списка Эпиков
+    @Override
     public List<Epic> getEpics() {
         Collection<Epic> values = epics.values();
         return new ArrayList<>(values);
     }
 
     // Получение списка СубТасков
+    @Override
     public List<SubTask> getSubtask() {
         Collection<SubTask> values = subTasks.values();
         return new ArrayList<>(values);
     }
 
     // Получение списка СубТасков определенного Эпика
+    @Override
     public List<SubTask> getSubtaskOfEpic(int epic_id) {
         Collection <SubTask> values = new ArrayList<>();
 
@@ -158,6 +182,7 @@ public class TaskManagerService {
     }
 
     // Определение статуса Эпика
+    @Override
     public void updateEpicStatus(Epic epic) {
         int i = 0;
 
