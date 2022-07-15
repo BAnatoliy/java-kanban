@@ -1,9 +1,8 @@
-package TZ_3.Task;
+package Kanban.Task;
 
-import TZ_3.Constant.Status;
+import Kanban.Constant.Status;
 
 public class Task {
-
     protected int id;
     protected String title;
     protected String description;
@@ -42,7 +41,6 @@ public class Task {
     public Status getStatus() {
         return status;
     }
-
 
     @Override
     public String toString() {

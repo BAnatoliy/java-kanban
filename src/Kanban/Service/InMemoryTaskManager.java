@@ -1,9 +1,9 @@
-package TZ_3.Service;
+package Kanban.Service;
 
-import TZ_3.Constant.Status;
-import TZ_3.Task.Epic;
-import TZ_3.Task.SubTask;
-import TZ_3.Task.Task;
+import Kanban.Constant.Status;
+import Kanban.Task.Epic;
+import Kanban.Task.SubTask;
+import Kanban.Task.Task;
 
 import java.util.*;
 
@@ -11,8 +11,9 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
-
     int generationTaskId = 0;
+
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     // Добавление Таск
     @Override
@@ -21,6 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
         task.setId(taskId);
         tasks.put(task.getId(), task);
     }
+
     // Добавление Эпика
     @Override
     public void addEpic(Epic epic) {
@@ -29,6 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.put(epic.getId(), epic);
         updateEpicStatus(epic);
     }
+
     // Добавление Субтаск
     @Override
     public void addSubTask(SubTask subTask) {
@@ -79,19 +82,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int taskId) {
-        Managers.getDefaultHistory().addHistoryTasks(tasks.get(taskId));
+        historyManager.addHistoryTask(tasks.get(taskId));
         return tasks.get(taskId);
     }
 
     @Override
     public Epic getEpic(int taskId) {
-        Managers.getDefaultHistory().addHistoryTasks(epics.get(taskId));
+        historyManager.addHistoryTask(epics.get(taskId));
         return epics.get(taskId);
     }
 
     @Override
     public SubTask getSubTask(int taskId) {
-        Managers.getDefaultHistory().addHistoryTasks(subTasks.get(taskId));
+        historyManager.addHistoryTask(subTasks.get(taskId));
         return subTasks.get(taskId);
     }
 
@@ -215,5 +218,4 @@ public class InMemoryTaskManager implements TaskManager {
                 updateEpic(newEpic, epic.getId());
             }
     }
-
 }

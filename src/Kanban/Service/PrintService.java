@@ -1,8 +1,8 @@
-package TZ_3.Service;
+package Kanban.Service;
 
-import TZ_3.Task.Epic;
-import TZ_3.Task.SubTask;
-import TZ_3.Task.Task;
+import Kanban.Task.Epic;
+import Kanban.Task.SubTask;
+import Kanban.Task.Task;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package TZ_3.Task;
+package Kanban.Task;
 
-import TZ_3.Constant.Status;
+import Kanban.Constant.Status;
 
 import java.util.ArrayList;
 import java.util.List;

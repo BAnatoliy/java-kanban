@@ -1,9 +1,8 @@
-package TZ_3.Task;
+package Kanban.Task;
 
-import TZ_3.Constant.Status;
+import Kanban.Constant.Status;
 
 public class SubTask extends Task {
-
     private int epicId;
 
     public SubTask(String title, String description, Status status, int epicId) {

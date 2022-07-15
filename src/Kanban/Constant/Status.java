@@ -1,4 +1,4 @@
-package TZ_3.Constant;
+package Kanban.Constant;
 
 public enum Status {
     NEW,
