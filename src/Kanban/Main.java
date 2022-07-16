@@ -1,7 +1,6 @@
 package Kanban;
 
 import Kanban.Constant.Status;
-import Kanban.Service.HistoryManager;
 import Kanban.Service.Managers;
 import Kanban.Service.PrintConsole;
 import Kanban.Service.TaskManager;
@@ -15,7 +14,6 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-        HistoryManager historyManager = Managers.getDefaultHistory();
         PrintConsole printConsole = new PrintConsole();
 
         Task task = new Task("Task 1", "description Task 1", Status.NEW);
@@ -140,7 +138,7 @@ public class Main {
 
         System.out.println("++++++++++++++++");
 
-        printConsole.printHistoryTasks(historyManager.getHistory());
+        printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
     }
 }
 
