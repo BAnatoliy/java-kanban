@@ -65,6 +65,7 @@ public class PrintConsole implements PrintService {
         System.out.println(subTask);
     }
 
+    // Печать истории просмотров
     @Override
     public void printHistoryTasks(List<Task> historyTasks) {
         System.out.println("История задач: ");

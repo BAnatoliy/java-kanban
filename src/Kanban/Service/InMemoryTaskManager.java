@@ -12,8 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     int generationTaskId = 0;
-
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public HistoryManager getHistoryManager() {
@@ -132,6 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int taskId) {
         tasks.remove(taskId);
+        historyManager.remove(taskId);
     }
 
     // Удаление Эпика по идентификатору
@@ -139,9 +139,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpic(int taskId) {
         for (Integer i : epics.get(taskId).getSubTaskIds()) {
             subTasks.remove(i);
+            historyManager.remove(i);
         }
         epics.remove(taskId);
-
+        historyManager.remove(taskId);
     }
 
     // Удаление СубТаска по идентификатору
@@ -151,7 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.remove(taskId);
         epic.removeSubTask(taskId);
         updateEpicStatus(epic);
-
+        historyManager.remove(taskId);
     }
 
     // Получение списка Тасков

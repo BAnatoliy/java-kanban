@@ -93,6 +93,9 @@ public class Main {
         printConsole.printEpic(taskManager.getEpic(epic3.getId()));
         printConsole.printSubTask(taskManager.getSubTask(subTask7.getId()));
 
+        printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
+
+
         // Получение всех Задач и Подзадач Эпика3
         List<Task> tasks3 = taskManager.getTasks();
         List<Epic> epics3 = taskManager.getEpics();
@@ -113,6 +116,8 @@ public class Main {
 
         // Создание эпика со статусом Done (без Субтасков), печать его нового статуса исходя из условий задачи (NEW)
         System.out.println("----------------");
+        printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
+
         System.out.println("----------------");
 
         Epic epic4 = new Epic("Epic 27", "description Epic 27", Status.DONE);
@@ -131,13 +136,59 @@ public class Main {
 
         // Печать списка Эпиков после удаления всех Субтасков
         System.out.println("----------------");
-        System.out.println("----------------");
         taskManager.deleteAllSubTasks();
         List<Epic> epics5 = taskManager.getEpics();
         printConsole.printEpics(epics5);
 
-        System.out.println("++++++++++++++++");
+        taskManager.deleteTask(1);
 
+        System.out.println("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("Проверка ТЗ-5. Вывод задач и истории просмотров\n");
+
+        Task task_1 = new Task("1 Task", "description Task 1_1", Status.DONE);
+        taskManager.addTask(task_1);
+        Epic epic_1 = new Epic("2 Epic", "description Epic 1_2", Status.NEW);
+        taskManager.addEpic(epic_1);
+        SubTask subTask_1 = new SubTask("2 Epic - 3 SubTask", "description 3 Subtask", Status.NEW, epic_1.getId());
+        taskManager.addSubTask(subTask_1);
+        SubTask subTask_2 = new SubTask("2 Epic - 4 SubTask", "description 4 Subtask", Status.NEW, epic_1.getId());
+        taskManager.addSubTask(subTask_2);
+        SubTask subTask_3 = new SubTask("2 Epic - 5 SubTask", "description 5 Subtask", Status.NEW, epic_1.getId());
+        taskManager.addSubTask(subTask_3);
+
+        Task task_2 = new Task("6 Task", "description 6 Task", Status.NEW);
+        taskManager.addTask(task_2);
+        Epic epic_2 = new Epic("7 Epic", "description 7 Epic", Status.NEW);
+        taskManager.addEpic(epic_2);
+
+        printConsole.printTask(taskManager.getTask(task_1.getId())); // печать таски ID = 11;
+        printConsole.printEpic(taskManager.getEpic(epic_1.getId())); // печать эпика ID = 12;
+        printConsole.printSubTask(taskManager.getSubTask(subTask_1.getId())); // печать субтаски ID = 13;
+        printConsole.printSubTask(taskManager.getSubTask(subTask_2.getId())); // печать субтаски ID = 14;
+        printConsole.printSubTask(taskManager.getSubTask(subTask_3.getId())); // печать субтаски ID = 15;
+        printConsole.printTask(taskManager.getTask(task_2.getId())); // печать таски ID = 16;
+        printConsole.printEpic(taskManager.getEpic(epic_2.getId())); // печать эпика ID = 17;
+
+        // печать истории просмотров
+        printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
+        System.out.println("----------------");
+
+        printConsole.printSubTask(taskManager.getSubTask(subTask_2.getId())); // печать субтаски ID = 14;
+        printConsole.printEpic(taskManager.getEpic(epic_1.getId())); // печать эпика ID = 12;
+        printConsole.printSubTask(taskManager.getSubTask(subTask_1.getId())); // печать субтаски ID = 13;
+        printConsole.printEpic(taskManager.getEpic(epic_2.getId())); // печать эпика ID = 17;
+        printConsole.printTask(taskManager.getTask(task_1.getId())); // печать таски ID = 11;
+        printConsole.printSubTask(taskManager.getSubTask(subTask_3.getId())); // печать субтаски ID = 15;
+        printConsole.printTask(taskManager.getTask(task_2.getId())); // печать таски ID = 16;
+
+        // печать истории просмотров после изменения порядка
+        printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
+        System.out.println("----------------");
+
+        taskManager.deleteTask(task_1.getId());  // удаление таски ID = 11;
+        taskManager.deleteEpic(epic_1.getId()); // удаление эпика ID = 12;
+
+        // печать истории просмотров после изменения порядка после удаления таски и эпика(вместе с его субтасками)
         printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
     }
 }
