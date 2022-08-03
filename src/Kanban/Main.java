@@ -190,6 +190,7 @@ public class Main {
 
         // печать истории просмотров после изменения порядка после удаления таски и эпика(вместе с его субтасками)
         printConsole.printHistoryTasks(taskManager.getHistoryManager().getHistory());
+
     }
 }
 
