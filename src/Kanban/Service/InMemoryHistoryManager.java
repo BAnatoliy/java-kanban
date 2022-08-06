@@ -33,18 +33,30 @@ public class InMemoryHistoryManager implements HistoryManager{
             linkTask.removeNode(nodesOfTask.get(id));
             nodesOfTask.remove(id);
         }
-
     }
 
     private class CustomLinkedList<E extends Task> {
-        Node<E> first;
-        Node<E> last;
+        private Node<E> first;
+        private Node<E> last;
+        //private int size = 0;
 
         private Node<E> linkLast(E element) {
             Node<E> l = last;
             Node<E> newNode = new Node<>(l, element, null);
             last = newNode;
 
+            /*if (size == 0) {
+                first = null;
+                last = null;
+            } else if (size == 1) {
+                first = newNode;
+                last = newNode;
+            } else {
+                last = newNode;
+                l.next = newNode;
+            }*/
+            //size ++;
+            //return newNode;
             if (l == null) {
                 first = newNode;
             } else {
@@ -54,12 +66,15 @@ public class InMemoryHistoryManager implements HistoryManager{
         }
 
         private void removeNode (Node<E> node) {
-            E element = node.element;
             Node<E> prev = node.prev;
             Node<E> next = node.next;
 
             if (prev == null) {
                 first = next;
+                //next.prev = null;
+                /*при добавлении предыдущей строки, в случае если в списке один элемент бросается исключение
+                  из-за того что следующий элемент next == null, при обращении к его полю next.prev
+                  возникает исключение*/
             } else {
                 prev.next = next;
                 node.prev = null;
@@ -71,14 +86,18 @@ public class InMemoryHistoryManager implements HistoryManager{
                 next.prev = prev;
                 node.next = null;
             }
-            node.element = null;
+            //size--;
         }
 
-        List<Task> getTasks() {
+        private List<Task> getTasks() {
             List<Task> taskArrayList = new ArrayList<>();
-            for (Node<E> f = first; f != null ; f = f.next) {
-                taskArrayList.add(f.element);
-            }
+            //for (Node<E> f = first; f != null ; f = f.next) {
+                Node<E> f = first;
+                while (f != null) {
+                    taskArrayList.add(f.element);
+                    f = f.next;
+                }
+            //}
             return taskArrayList;
         }
     }
