@@ -35,34 +35,23 @@ public class InMemoryHistoryManager implements HistoryManager{
         }
     }
 
-    private class CustomLinkedList<E extends Task> {
+    private static class CustomLinkedList<E extends Task> {
         private Node<E> first;
         private Node<E> last;
-        //private int size = 0;
+        private int size = 0;
 
         private Node<E> linkLast(E element) {
-            Node<E> l = last;
-            Node<E> newNode = new Node<>(l, element, null);
-            last = newNode;
-
-            /*if (size == 0) {
-                first = null;
-                last = null;
-            } else if (size == 1) {
-                first = newNode;
-                last = newNode;
+            if (size == 0) {
+                first = new Node<>(null, element, null);
+                last = first;
             } else {
-                last = newNode;
-                l.next = newNode;
-            }*/
-            //size ++;
-            //return newNode;
-            if (l == null) {
-                first = newNode;
-            } else {
-                l.next = newNode;
+                Node<E> l = last;
+                last = new Node<>(l, element, null);
+                l.next = last;
             }
-            return newNode;
+
+            size++;
+            return last;
         }
 
         private void removeNode (Node<E> node) {
@@ -71,10 +60,9 @@ public class InMemoryHistoryManager implements HistoryManager{
 
             if (prev == null) {
                 first = next;
-                //next.prev = null;
-                /*при добавлении предыдущей строки, в случае если в списке один элемент бросается исключение
-                  из-за того что следующий элемент next == null, при обращении к его полю next.prev
-                  возникает исключение*/
+                if (next != null) {
+                    next.prev = null;
+                }
             } else {
                 prev.next = next;
                 node.prev = null;
@@ -82,11 +70,14 @@ public class InMemoryHistoryManager implements HistoryManager{
 
             if (next == null) {
                 last = prev;
+                if (last != null) {
+                    last.next = null;
+                }
             } else {
                 next.prev = prev;
                 node.next = null;
             }
-            //size--;
+            size--;
         }
 
         private List<Task> getTasks() {
