@@ -35,6 +35,18 @@ public class InMemoryHistoryManager implements HistoryManager{
         }
     }
 
+    private static class Node<E extends Task> {
+        public E element;
+        public Node<E> next;
+        public Node<E> prev;
+
+        private Node(Node<E> prev, E element, Node<E> next) {
+            this.element = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+
     private static class CustomLinkedList<E extends Task> {
         private Node<E> first;
         private Node<E> last;

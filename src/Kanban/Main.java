@@ -25,6 +25,7 @@ public class Main {
         delete_Task_Should_List_Of_Tasks_Without_Remote_Task(taskManager);
         delete_Epic_Should_List_Of_Epics_Without_Remote_Epic_And_SupTask_Of_This_Epic(taskManager);
         delete_SubTask_Should_List_Of_SubTasks_And_Epic_Without_Remote_SubTask(taskManager);
+        status_Of_Epic_Should_Update_After_Add_SubTask(taskManager);
 
 
         taskManager = createTasksForTestHistoryManager();
@@ -182,6 +183,18 @@ public class Main {
         }
     }
 
+    private static void status_Of_Epic_Should_Update_After_Add_SubTask(TaskManager taskManager) {
+        taskManager.addSubTask(new SubTask("SubTaskNew", "description SubtaskNew", Status.DONE, 2));
+        Status actual = taskManager.getEpic(2).getStatus();
+        Status expected = Status.DONE;
+
+        if (actual.equals(expected)) {
+            System.out.println("Тест 11 пройден");
+        } else {
+            throw new AssertionError("Тест 11 не пройден.");
+        }
+    }
+
     private static TaskManager createTasksForTestHistoryManager() {
         TaskManager taskManager = Managers.getDefault();
 
@@ -215,9 +228,9 @@ public class Main {
                 taskManager.getEpic(6)));
 
         if (actual.equals(expected)) {
-            System.out.println("Тест 11 пройден");
+            System.out.println("Тест 12 пройден");
         } else {
-            throw new AssertionError("Тест 11 не пройден.");
+            throw new AssertionError("Тест 12 не пройден.");
         }
     }
 
@@ -240,9 +253,9 @@ public class Main {
                 taskManager.getTask(5)));
 
         if (actual.equals(expected)) {
-            System.out.println("Тест 12 пройден");
+            System.out.println("Тест 13 пройден");
         } else {
-            throw new AssertionError("Тест 12 не пройден.");
+            throw new AssertionError("Тест 13 не пройден.");
         }
     }
 
@@ -255,9 +268,9 @@ public class Main {
                 taskManager.getTask(5)));
 
         if (actual.equals(expected)) {
-            System.out.println("Тест 13 пройден");
+            System.out.println("Тест 14 пройден");
         } else {
-            throw new AssertionError("Тест 13 не пройден.");
+            throw new AssertionError("Тест 14 не пройден.");
         }
     }
 }
