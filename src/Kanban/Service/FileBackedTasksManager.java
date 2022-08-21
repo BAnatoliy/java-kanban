@@ -190,21 +190,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             if (task != null) {
                 if (task.getClass() == Task.class) {
                     int id = task.getId();
-                    setGenerationTaskId(id);
+                    fbtm.generationTaskId = id;
                     fbtm.addTask(task);
                     if (id > maxId) {
                         maxId = id;
                     }
                 } else if (task.getClass() == Epic.class) {
                     int id = task.getId();
-                    setGenerationTaskId(id);
+                    fbtm.generationTaskId = id;
                     fbtm.addEpic((Epic) task);
                     if (id > maxId) {
                         maxId = id;
                     }
                 } else {
                     int id = task.getId();
-                    setGenerationTaskId(id);
+                    fbtm.generationTaskId = id;
                     fbtm.addSubTask((SubTask) task);
                     task.setId(id);
                     if (id > maxId) {
@@ -213,7 +213,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
             }
 
-            setGenerationTaskId(maxId + 1);
+            fbtm.generationTaskId = maxId + 1;
         }
 
         if (!linesFromLine.isEmpty()) {
@@ -245,7 +245,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 // добавится история просмотров созданных Тасков
        /*fbtm.getTask(10);
        fbtm.getEpic(11);
-       fbtm.getSubTask(12); */
+       fbtm.getSubTask(12);*/
 
         // удалится Эпик, обновится история просмотров
        /*fbtm.deleteEpic(11);*/

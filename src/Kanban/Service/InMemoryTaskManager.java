@@ -12,7 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
-    private static int generationTaskId = 0;
+    protected int generationTaskId = 0;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
@@ -30,10 +30,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Map<Integer, SubTask> getMapOfSubTasks() {
         return subTasks;
-    }
-
-    public static void setGenerationTaskId (int i) {
-        generationTaskId = i;
     }
 
     // Добавление Таск
