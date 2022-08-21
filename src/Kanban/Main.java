@@ -7,11 +7,12 @@ import Kanban.Task.Epic;
 import Kanban.Task.SubTask;
 import Kanban.Task.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TaskManager taskManager;
 
         taskManager = createTasksForTestTaskManager();
@@ -36,7 +37,7 @@ public class Main {
 
 
 
-    private static TaskManager createTasksForTestTaskManager() {
+    private static TaskManager createTasksForTestTaskManager() throws IOException {
         TaskManager taskManager = Managers.getDefault();
         taskManager.addTask(new Task("Task 1", "description Task 1", Status.NEW));
         taskManager.addTask(new Task("Task 2", "description Task 2", Status.IN_PROGRESS));
@@ -51,7 +52,7 @@ public class Main {
         return taskManager;
     }
 
-    private static void lists_Of_Tasks_Should_Comprises_Create_Tasks(TaskManager taskManager) {
+    private static void lists_Of_Tasks_Should_Comprises_Create_Tasks(TaskManager taskManager) throws IOException {
         List<Task> actual = taskManager.getTasks();
         List<Task> expected = List.of(taskManager.getTask(0),
                 taskManager.getTask(1));
@@ -62,7 +63,7 @@ public class Main {
         }
     }
 
-    private static void lists_Of_Epics_Should_Comprises_Create_Epics(TaskManager taskManager) {
+    private static void lists_Of_Epics_Should_Comprises_Create_Epics(TaskManager taskManager) throws IOException {
         List<Epic> actual = taskManager.getEpics();
         List<Epic> expected = List.of(taskManager.getEpic(2),
                 taskManager.getEpic(3));
@@ -73,7 +74,7 @@ public class Main {
         }
     }
 
-    private static void lists_Of_SubTasks_Should_Comprises_Create_SubTasks(TaskManager taskManager) {
+    private static void lists_Of_SubTasks_Should_Comprises_Create_SubTasks(TaskManager taskManager) throws IOException {
         List<SubTask> actual = taskManager.getSubtask();
         List<SubTask> expected = List.of(taskManager.getSubTask(4),
                 taskManager.getSubTask(5),
@@ -88,7 +89,7 @@ public class Main {
         }
     }
 
-    private static void lists_Of_SubTasks_Should_Comprises_Subtasks_Of_Epic(TaskManager taskManager) {
+    private static void lists_Of_SubTasks_Should_Comprises_Subtasks_Of_Epic(TaskManager taskManager) throws IOException {
         List<SubTask> actual = taskManager.getSubtaskOfEpic(3);
         List<SubTask> expected = List.of(taskManager.getSubTask(5),
                 taskManager.getSubTask(6),
@@ -102,7 +103,7 @@ public class Main {
         }
     }
 
-    private static void new_Task_Should_Replace_Existing_Task_By_Id(TaskManager taskManager) {
+    private static void new_Task_Should_Replace_Existing_Task_By_Id(TaskManager taskManager) throws IOException {
         Task task = new Task("Task New", "description Task New", Status.NEW);
         taskManager.updateTask(task, 0);
         Task actual = taskManager.getTask(0);
@@ -115,7 +116,7 @@ public class Main {
         }
     }
 
-    private static void new_Epic_Should_Replace_Existing_Epic_By_Id(TaskManager taskManager) {
+    private static void new_Epic_Should_Replace_Existing_Epic_By_Id(TaskManager taskManager) throws IOException {
         Epic epic = new Epic("Epic New", "description Epic New", Status.NEW);
         taskManager.updateEpic(epic, 3);
         Epic actual = taskManager.getEpic(3);
@@ -128,7 +129,7 @@ public class Main {
         }
     }
 
-    private static void new_SubTask_Should_Replace_Existing_SubTask_By_Id(TaskManager taskManager) {
+    private static void new_SubTask_Should_Replace_Existing_SubTask_By_Id(TaskManager taskManager) throws IOException {
         SubTask subTask = new SubTask("SubTask New", "description Subtask New", Status.IN_PROGRESS, 2);
         taskManager.updateSubTask(subTask, 4);
         SubTask actual = taskManager.getSubTask(4);
@@ -141,7 +142,7 @@ public class Main {
         }
     }
 
-    private static void delete_Task_Should_List_Of_Tasks_Without_Remote_Task(TaskManager taskManager) {
+    private static void delete_Task_Should_List_Of_Tasks_Without_Remote_Task(TaskManager taskManager) throws IOException {
         taskManager.deleteTask(0);
         List<Task> actual = taskManager.getTasks();
         List<Task> expected = List.of(taskManager.getTask(1));
@@ -153,7 +154,7 @@ public class Main {
         }
     }
 
-    private static void delete_Epic_Should_List_Of_Epics_Without_Remote_Epic_And_SupTask_Of_This_Epic(TaskManager taskManager) {
+    private static void delete_Epic_Should_List_Of_Epics_Without_Remote_Epic_And_SupTask_Of_This_Epic(TaskManager taskManager) throws IOException {
         taskManager.deleteEpic(3);
         List<Epic> actualEpic = taskManager.getEpics();
         List<Epic> expectedEpic = List.of(taskManager.getEpic(2));
@@ -183,7 +184,7 @@ public class Main {
         }
     }
 
-    private static void status_Of_Epic_Should_Update_After_Add_SubTask(TaskManager taskManager) {
+    private static void status_Of_Epic_Should_Update_After_Add_SubTask(TaskManager taskManager) throws IOException {
         taskManager.addSubTask(new SubTask("SubTaskNew", "description SubtaskNew", Status.DONE, 2));
         Status actual = taskManager.getEpic(2).getStatus();
         Status expected = Status.DONE;
@@ -195,7 +196,7 @@ public class Main {
         }
     }
 
-    private static TaskManager createTasksForTestHistoryManager() {
+    private static TaskManager createTasksForTestHistoryManager() throws IOException {
         TaskManager taskManager = Managers.getDefault();
 
         taskManager.addTask(new Task("1 Task", "description Task 1_1", Status.DONE));
@@ -209,7 +210,7 @@ public class Main {
         return taskManager;
     }
 
-    private static void history_Of_Tasks_Should_Comprises_TasksId_From_One_To_Six_InOrder(TaskManager taskManager) {
+    private static void history_Of_Tasks_Should_Comprises_TasksId_From_One_To_Six_InOrder(TaskManager taskManager) throws IOException {
         taskManager.getTask(0);
         taskManager.getEpic(1);
         taskManager.getSubTask(2);
@@ -234,7 +235,7 @@ public class Main {
         }
     }
 
-    private static void history_Of_Tasks_Should_Comprises_TasksId_InOrder_3_1_2_6_0_4_5(TaskManager taskManager) {
+    private static void history_Of_Tasks_Should_Comprises_TasksId_InOrder_3_1_2_6_0_4_5(TaskManager taskManager) throws IOException {
         taskManager.getSubTask(3);
         taskManager.getEpic(1);
         taskManager.getSubTask(2);
@@ -259,7 +260,7 @@ public class Main {
         }
     }
 
-    private static void after_Delete_TaskId0_And_TaskID1_History_Of_Tasks_Should_Comprises_TasksId_6_And_5(TaskManager taskManager) {
+    private static void after_Delete_TaskId0_And_TaskID1_History_Of_Tasks_Should_Comprises_TasksId_6_And_5(TaskManager taskManager) throws IOException {
         taskManager.deleteTask(0);
         taskManager.deleteEpic(1);
 

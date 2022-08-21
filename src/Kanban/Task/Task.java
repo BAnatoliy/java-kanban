@@ -1,6 +1,7 @@
 package Kanban.Task;
 
 import Kanban.Constant.Status;
+import Kanban.Constant.TypeOfTasks;
 
 public class Task {
     protected int id;
@@ -40,6 +41,10 @@ public class Task {
 
     public Status getStatus() {
         return status;
+    }
+
+    public TypeOfTasks getTypeOfTasks() {
+        return TypeOfTasks.TASK;
     }
 
     @Override

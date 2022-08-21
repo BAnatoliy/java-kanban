@@ -5,13 +5,14 @@ import Kanban.Task.Epic;
 import Kanban.Task.SubTask;
 import Kanban.Task.Task;
 
+import java.io.IOException;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
-    int generationTaskId = 0;
+    private static int generationTaskId = 0;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
@@ -19,9 +20,25 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager;
     }
 
+    public Map<Integer, Task> getMapOfTasks() {
+        return tasks;
+    }
+
+    public Map<Integer, Epic> getMapOfEpic() {
+        return epics;
+    }
+
+    public Map<Integer, SubTask> getMapOfSubTasks() {
+        return subTasks;
+    }
+
+    public static void setGenerationTaskId (int i) {
+        generationTaskId = i;
+    }
+
     // Добавление Таск
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws IOException {
         int taskId = generationTaskId++;
         task.setId(taskId);
         tasks.put(task.getId(), task);
@@ -29,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // Добавление Эпика
     @Override
-    public void addEpic(Epic epic) {
+    public void addEpic(Epic epic) throws IOException {
         int epicId = generationTaskId++;
         epic.setId(epicId);
         epics.put(epic.getId(), epic);
@@ -38,7 +55,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // Добавление Субтаск
     @Override
-    public void addSubTask(SubTask subTask) {
+    public void addSubTask(SubTask subTask) throws IOException {
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
 
@@ -85,19 +102,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(int taskId) {
+    public Task getTask(int taskId) throws IOException {
         historyManager.addHistoryTask(tasks.get(taskId));
         return tasks.get(taskId);
     }
 
     @Override
-    public Epic getEpic(int taskId) {
+    public Epic getEpic(int taskId) throws IOException {
         historyManager.addHistoryTask(epics.get(taskId));
         return epics.get(taskId);
     }
 
     @Override
-    public SubTask getSubTask(int taskId) {
+    public SubTask getSubTask(int taskId) throws IOException {
         historyManager.addHistoryTask(subTasks.get(taskId));
         return subTasks.get(taskId);
     }

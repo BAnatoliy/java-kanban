@@ -4,14 +4,15 @@ import Kanban.Task.Epic;
 import Kanban.Task.SubTask;
 import Kanban.Task.Task;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface TaskManager {
-    void addTask(Task task);
+    void addTask(Task task) throws IOException;
 
-    void addEpic(Epic epic);
+    void addEpic(Epic epic) throws IOException;
 
-    void addSubTask(SubTask subTask);
+    void addSubTask(SubTask subTask) throws IOException;
 
     void updateTask(Task task, int taskId);
 
@@ -19,11 +20,11 @@ public interface TaskManager {
 
     void updateSubTask(SubTask subTask, int subTaskId);
 
-    Task getTask(int taskId);
+    Task getTask(int taskId) throws IOException;
 
-    Epic getEpic(int taskId);
+    Epic getEpic(int taskId) throws IOException;
 
-    SubTask getSubTask(int taskId);
+    SubTask getSubTask(int taskId) throws IOException;
 
     void deleteAllTasks();
 

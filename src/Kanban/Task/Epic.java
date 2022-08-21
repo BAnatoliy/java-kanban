@@ -1,6 +1,7 @@
 package Kanban.Task;
 
 import Kanban.Constant.Status;
+import Kanban.Constant.TypeOfTasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,11 @@ public class Epic extends Task {
     // Удаление из списка Субтасков элемента по заданному идентификатору
     public void removeSubTask(Integer subTask_id) {
         subTaskIds.remove(subTask_id);
+    }
+
+    @Override
+    public TypeOfTasks getTypeOfTasks() {
+        return TypeOfTasks.EPIC;
     }
 
     @Override
