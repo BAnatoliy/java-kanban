@@ -1,7 +1,7 @@
 package Kanban.Task;
 
 import Kanban.Constant.Status;
-import Kanban.Constant.TypeOfTasks;
+import Kanban.Constant.TypeTasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,8 @@ public class Epic extends Task {
     }
 
     @Override
-    public TypeOfTasks getTypeOfTasks() {
-        return TypeOfTasks.EPIC;
+    public TypeTasks getTypeTasks() {
+        return TypeTasks.EPIC;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package Kanban.Task;
 
 import Kanban.Constant.Status;
-import Kanban.Constant.TypeOfTasks;
+import Kanban.Constant.TypeTasks;
 
 public class SubTask extends Task {
     private int epicId;
@@ -20,8 +20,8 @@ public class SubTask extends Task {
     }
 
     @Override
-    public TypeOfTasks getTypeOfTasks() {
-        return TypeOfTasks.SUBTASK;
+    public TypeTasks getTypeTasks() {
+        return TypeTasks.SUBTASK;
     }
 
     @Override
