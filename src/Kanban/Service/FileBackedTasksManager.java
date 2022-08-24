@@ -79,8 +79,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         if (task instanceof SubTask) {
             return task.getId() + "," + task.getTypeTasks() + "," + task.getTitle() + "," + task.getStatus() + "," +
                     task.getDescription() + "," + ((SubTask) task).getEpicId();
-        //} else if (task instanceof Epic) {
-        //    return task.getId() + "," + task.getTypeTasks() + "," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
         } else {
             return task.getId() + "," + task.getTypeTasks() + "," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
         }
@@ -175,7 +173,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         try (BufferedReader fileReader = new BufferedReader(new FileReader(file))) {
             String task;
 
-            while ((task = fileReader.readLine()) != null) { //в BufferedReader нет метода nextLine(), поэтому выбрал такой способ
+            while ((task = fileReader.readLine()) != null) {
                 linesFromLine.add(task);
             }
 
@@ -237,7 +235,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         File file = new File("Files" + File.separator + "Tasks.CSV");
         FileBackedTasksManager fbtm = FileBackedTasksManager.loadFromFile(file);
 
-                // добавятся новые Таски
+             /*   // добавятся новые Таски
        fbtm.addTask(new Task("ID 10 Task", "description Task 1_1", Status.DONE));
        fbtm.addEpic(new Epic("ID 11 Epic", "description Epic 1_2", Status.NEW));
        fbtm.addSubTask(new SubTask("ID 12 SubTask", "description 3 Subtask", Status.NEW, 11));
@@ -248,6 +246,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
        fbtm.getSubTask(12);
 
         // удалится Эпик, обновится история просмотров
-       fbtm.deleteEpic(11);
+       fbtm.deleteEpic(11);*/
     }
 }
