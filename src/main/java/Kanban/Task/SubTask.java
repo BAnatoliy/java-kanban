@@ -6,8 +6,8 @@ import Kanban.Constant.TypeTasks;
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String title, String description, Status status, int epicId) {
-        super(title, description, status);
+    public SubTask(String title, String description, Status status, String duration, String startTime, int epicId) {
+        super(title, description, status, duration, startTime);
         this.epicId = epicId;
     }
 
@@ -26,12 +26,15 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "epic_id=" + epicId +
-                ", task_id=" + id +
+        return "SubTask{" +
+                "id=" + id +
+                ", epicId=" + epicId +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + duration.toHours() + ":" + duration.toMinutesPart() +
+                ", startTime=" + startTime.format(FORMATER) +
+                ", endTime=" + getEndTime().format(FORMATER) +
                 '}';
     }
 }

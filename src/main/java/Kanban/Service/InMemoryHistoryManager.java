@@ -2,10 +2,7 @@ package Kanban.Service;
 
 import Kanban.Task.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager{
     private final Map<Integer, Node<Task>> nodesOfTask = new HashMap<>();
@@ -18,7 +15,10 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     @Override
     public void addHistoryTask(Task task) {
-        Node<Task> node = linkTask.linkLast(task);
+        Node<Task> node = null;
+        if (task != null) {
+            node = linkTask.linkLast(task);
+        }
         if (nodesOfTask.containsKey(task.getId())) {
             linkTask.removeNode(nodesOfTask.get(task.getId()));
             nodesOfTask.put(task.getId(), node);
@@ -44,6 +44,19 @@ public class InMemoryHistoryManager implements HistoryManager{
             this.element = element;
             this.next = next;
             this.prev = prev;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node<?> node = (Node<?>) o;
+            return Objects.equals(element, node.element);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(element, next, prev);
         }
     }
 
@@ -101,5 +114,18 @@ public class InMemoryHistoryManager implements HistoryManager{
                 }
             return taskArrayList;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InMemoryHistoryManager that = (InMemoryHistoryManager) o;
+        return Objects.equals(nodesOfTask, that.nodesOfTask);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodesOfTask, linkTask);
     }
 }

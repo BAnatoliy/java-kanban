@@ -42,11 +42,9 @@ public interface TaskManager {
 
     List<Epic> getEpics();
 
-    List<SubTask> getSubtask();
+    List<SubTask> getSubTasks();
 
     List<SubTask> getSubtaskOfEpic(int epic_id);
-
-    void updateEpicStatus(Epic epic);
 
     HistoryManager getHistoryManager();
 }
