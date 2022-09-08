@@ -4,7 +4,6 @@ import Kanban.Constant.Status;
 import Kanban.Task.Epic;
 import Kanban.Task.SubTask;
 import Kanban.Task.Task;
-import Kanban.Task.TaskTimeComparator;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -17,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     protected int generationTaskId = 0;
-    protected TreeSet<Task> sortTask = new TreeSet<>(new TaskTimeComparator());
+    protected TreeSet<Task> sortTask = new TreeSet<>(createTaskTimeComparator());
 
     @Override
     public HistoryManager getHistoryManager() {
@@ -39,34 +38,20 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(sortTask);
     }
 
-    // Метод, который добавляет Таск в Мапу и Трисет
-    private void addTaskInMapAndSet (Task task) {
+    private void addTaskInMap(Task task) {
         int taskId = generationTaskId++;
         task.setId(taskId);
         tasks.put(task.getId(), task);
-        sortTask.add(task);
     }
 
-    // Метод определяющий есть ли пересечения по времени с другими тасками, исходя их чего происходит добавление таски
     @Override
     public void addTask(Task task) throws IOException {
-        if (sortTask.isEmpty()) {
-            addTaskInMapAndSet(task);
-        } else {
-            int i = 0;
-            for (Task taskFromSet : sortTask) {
-                if (taskFromSet.getStartTime().isAfter(task.getEndTime()) ||
-                        taskFromSet.getEndTime().isBefore(task.getStartTime())) {
-                    i++;
-                }
-            }
-            if (i == sortTask.size()) {
-                addTaskInMapAndSet(task);
-            }
+        if (taskValidationCheck(task)) {
+            sortTask.add(task);
+            addTaskInMap(task);
         }
     }
 
-    // Добавление Эпика
     @Override
     public void addEpic(Epic epic) throws IOException {
         int epicId = generationTaskId++;
@@ -75,48 +60,48 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
     }
 
-    // Метод, который добавляет Субтаск в Мапу, Трисет, обновляет время и статус Эпика, связанного с Субтаской
-    private void addSubTaskInMapAndSet(SubTask subTask) throws IOException {
+    private boolean addSubTaskInMap(SubTask subTask) {
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
 
         if (epic == null) {
-            return;
+            return false;
         }
 
         int subTaskId = generationTaskId++;
         subTask.setId(subTaskId);
         subTasks.put(subTask.getId(), subTask);
-        sortTask.add(subTask);
 
         epic.addSubTask(subTaskId);
         updateEpicTime(epic);
         updateEpicStatus(epic);
+        return true;
     }
 
-    // Метод определяющий, есть ли пересечения по времени с другими тасками, исходя их чего происходит добавление субтаски
     @Override
     public void addSubTask(SubTask subTask) throws IOException {
-        if (sortTask.isEmpty()) {
-            addSubTaskInMapAndSet(subTask);
-        } else {
-            int i = 0;
-            for (Task taskFromSet : sortTask) {
-                if (taskFromSet.getStartTime().isAfter(subTask.getEndTime()) ||
-                        taskFromSet.getEndTime().isBefore(subTask.getStartTime())) {
-                    i++;
-                }
-            }
-            if (i == sortTask.size()) {
-                addSubTaskInMapAndSet(subTask);
+        if(taskValidationCheck(subTask) && addSubTaskInMap(subTask)) {
+                sortTask.add(subTask);
+        }
+    }
+
+    private boolean taskValidationCheck(Task task) {
+        int i = 0;
+        for (Task taskFromSet : sortTask) {
+            if (taskFromSet.getStartTime().isAfter(task.getEndTime()) ||
+                    taskFromSet.getEndTime().isBefore(task.getStartTime())) {
+                i++;
+            } else {
+                return false;
             }
         }
+        return i == sortTask.size();
     }
 
     // Обновление Таска (замена старого объекта новым)
     @Override
     public void updateTask(Task task, int taskId) {
-        if (tasks.containsKey(taskId)) {
+        if (taskValidationCheck(task) && tasks.containsKey(taskId)) {
             task.setId(taskId);
             tasks.put(task.getId(), task);
         }
@@ -135,7 +120,7 @@ public class InMemoryTaskManager implements TaskManager {
     // Обновление СубТаска (замена старого объекта новым)
     @Override
     public void updateSubTask(SubTask subTask, int subTaskId) {
-        if (subTasks.containsKey(subTaskId)) {
+        if (taskValidationCheck(subTask) && subTasks.containsKey(subTaskId)) {
             int epicId = subTask.getEpicId();
             Epic epic = epics.get(epicId);
 
@@ -353,6 +338,18 @@ public class InMemoryTaskManager implements TaskManager {
                 newEpic.setDuration(epic.getDuration());
                 updateEpic(newEpic, epic.getId());
             }
+    }
+
+    public static Comparator<Task> createTaskTimeComparator() {
+        return (o1, o2) -> {
+            if (o1.getStartTime().isAfter(o2.getStartTime())) {
+                return 1;
+            } else if (o1.getStartTime().isBefore(o2.getStartTime())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        };
     }
 
     @Override
