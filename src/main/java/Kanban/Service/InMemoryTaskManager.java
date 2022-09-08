@@ -4,6 +4,7 @@ import Kanban.Constant.Status;
 import Kanban.Task.Epic;
 import Kanban.Task.SubTask;
 import Kanban.Task.Task;
+import Kanban.Task.TaskTimeComparator;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -16,15 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     protected int generationTaskId = 0;
-    protected TreeSet<Task> sortTask = new TreeSet<>((o1, o2) -> {
-        if (o1.getStartTime().isAfter(o2.getStartTime())) {
-            return 1;
-        } else if (o1.getStartTime().isBefore(o2.getStartTime())) {
-            return -1;
-        } else {
-            return 0;
-        }
-    });
+    protected TreeSet<Task> sortTask = new TreeSet<>(new TaskTimeComparator());
 
     @Override
     public HistoryManager getHistoryManager() {
@@ -42,10 +35,11 @@ public class InMemoryTaskManager implements TaskManager {
     public Map<Integer, SubTask> getMapOfSubTasks() {
         return subTasks;
     }
-    public TreeSet<Task> getPrioritizedTasks() {
-        return sortTask;
+    public ArrayList<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortTask);
     }
 
+    // Метод, который добавляет Таск в Мапу и Трисет
     private void addTaskInMapAndSet (Task task) {
         int taskId = generationTaskId++;
         task.setId(taskId);
@@ -53,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
         sortTask.add(task);
     }
 
-    // Добавление Таск
+    // Метод определяющий есть ли пересечения по времени с другими тасками, исходя их чего происходит добавление таски
     @Override
     public void addTask(Task task) throws IOException {
         if (sortTask.isEmpty()) {
@@ -81,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
     }
 
+    // Метод, который добавляет Субтаск в Мапу, Трисет, обновляет время и статус Эпика, связанного с Субтаской
     private void addSubTaskInMapAndSet(SubTask subTask) throws IOException {
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
@@ -99,7 +94,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
     }
 
-    // Добавление Субтаск
+    // Метод определяющий, есть ли пересечения по времени с другими тасками, исходя их чего происходит добавление субтаски
     @Override
     public void addSubTask(SubTask subTask) throws IOException {
         if (sortTask.isEmpty()) {

@@ -409,6 +409,44 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
     }
 
     @Test
+    public void task_Should_Not_Be_Added_When_Time_Cross_With_Early_Added_Task() throws IOException {
+        setEpicsTasksSubTasks();
+        int expectSizeBeforeAddedNewTask = 2;
+        int resultSizeBeforeAddedNewTask = taskManager.getTasks().size();
+        int expectSizeBeforeAddedNewSubTask = 4;
+        int resultSizeBeforeAddedNewSubTask = taskManager.getSubTasks().size();
+        int expectSizeSortedListBeforeAddedTasks = 6;
+        int resultSizeSortedListBeforeAddedTasks = taskManager.getPrioritizedTasks().size();
+        assertAll(() -> {
+                    assertEquals(expectSizeBeforeAddedNewTask, resultSizeBeforeAddedNewTask);
+                    assertEquals(expectSizeBeforeAddedNewSubTask, resultSizeBeforeAddedNewSubTask);
+                    assertEquals(expectSizeSortedListBeforeAddedTasks, resultSizeSortedListBeforeAddedTasks);
+        }
+        );
+        taskManager.addTask(new Task("Task Not Add", "description Task2", Status.NEW,
+                "PT1H35M", "2022-02-07T14:50"));
+        taskManager.addTask(new Task("Task Will Be Added", "description Task2", Status.NEW,
+                "PT1H35M", "2022-02-08T14:50"));
+        taskManager.addSubTask(new SubTask("SubTask Not Add", "description Subtask", Status.NEW,
+                "PT1H35M", "2022-01-02T16:50", 1));
+        taskManager.addSubTask(new SubTask("SubTask Will Be Added", "description Subtask", Status.NEW,
+                "PT1H35M", "2022-01-02T12:50", 1));
+
+        int expectSizeAfterAddedNewTask = 3;
+        int resultSizeAfterAddedNewTask = taskManager.getTasks().size();
+        int expectSizeAfterAddedNewSubTask = 5;
+        int resultSizeAfterAddedNewSubTask = taskManager.getSubTasks().size();
+        int expectSizeSortedListAfterAddedTasks = 8;
+        int resultSizeSortedListAfterAddedTasks = taskManager.getPrioritizedTasks().size();
+        assertAll(() -> {
+            assertEquals(expectSizeAfterAddedNewTask, resultSizeAfterAddedNewTask);
+            assertEquals(expectSizeAfterAddedNewSubTask, resultSizeAfterAddedNewSubTask);
+            assertEquals(expectSizeSortedListAfterAddedTasks, resultSizeSortedListAfterAddedTasks);
+        }
+        );
+    }
+
+    @Test
     public void historyManager_Should_Add_Tasks_When_TaskManager_Get_This_Tasks() throws IOException {
         assertAll(() -> {
                     NullPointerException exception = assertThrows(NullPointerException.class,
