@@ -16,7 +16,11 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     protected int generationTaskId = 0;
-    protected TreeSet<Task> sortTask = new TreeSet<>(createTaskTimeComparator());
+    protected TreeSet<Task> sortTask = new TreeSet<>(InMemoryTaskManager::getComparatorByStartTime);
+
+    public static int getComparatorByStartTime(Task task1, Task task2) {
+        return task1.getStartTime().compareTo(task2.getStartTime());
+    }
 
     @Override
     public HistoryManager getHistoryManager() {
@@ -95,7 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
                 return false;
             }
         }
-        return i == sortTask.size();
+        return true;
     }
 
     // Обновление Таска (замена старого объекта новым)
@@ -338,18 +342,6 @@ public class InMemoryTaskManager implements TaskManager {
                 newEpic.setDuration(epic.getDuration());
                 updateEpic(newEpic, epic.getId());
             }
-    }
-
-    public static Comparator<Task> createTaskTimeComparator() {
-        return (o1, o2) -> {
-            if (o1.getStartTime().isAfter(o2.getStartTime())) {
-                return 1;
-            } else if (o1.getStartTime().isBefore(o2.getStartTime())) {
-                return -1;
-            } else {
-                return 0;
-            }
-        };
     }
 
     @Override
