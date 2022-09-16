@@ -90,12 +90,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean taskValidationCheck(Task task) {
-        int i = 0;
+        boolean isBusyTime;
         for (Task taskFromSet : sortTask) {
-            if (taskFromSet.getStartTime().isAfter(task.getEndTime()) ||
-                    taskFromSet.getEndTime().isBefore(task.getStartTime())) {
-                i++;
-            } else {
+            isBusyTime = !(taskFromSet.getStartTime().isAfter(task.getEndTime()) ||
+                    taskFromSet.getEndTime().isBefore(task.getStartTime()));
+            if (isBusyTime) {
                 return false;
             }
         }
