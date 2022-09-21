@@ -163,7 +163,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return tasksId;
     }
 
-    private void save() {
+    protected void save() {
+        if (Objects.isNull(file)) {
+            return;
+        }
 
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8, false))) {
             fileWriter.write("id,type,name,status,description,startTime,endTime,duration,epic");

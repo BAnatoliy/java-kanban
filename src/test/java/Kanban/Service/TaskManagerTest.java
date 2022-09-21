@@ -7,7 +7,7 @@ import Kanban.Task.Task;
 
 import java.io.IOException;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
 
     protected abstract void setTaskManager() throws IOException;
