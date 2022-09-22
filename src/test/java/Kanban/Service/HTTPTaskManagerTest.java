@@ -42,18 +42,13 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
 
     }
 
-    /*@BeforeEach
-    public void serverStart() {
-        server.start();
-    }
-*/
     @AfterEach
     public void serverStop() {
         server.stop();
     }
 
     @Test
-    public void shouldLoadManagerAfterSaveTask() {
+    public void should_Load_Manager_After_Save_Task() {
 
         assertEquals(2, manager.getTasks().size());
         assertEquals(2, manager.getEpics().size());
@@ -66,7 +61,7 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
     }
 
     @Test
-    public void shouldLoadManagerAfterSaveTaskAndDeleteTaskID7AndAllSubTask() {
+    public void should_Load_Manager_After_Save_Task_And_Delete_Task_ID_7_And_All_SubTask() {
         assertEquals(2, manager.getTasks().size());
         assertEquals(2, manager.getEpics().size());
         assertEquals(4, manager.getSubTasks().size());
@@ -81,7 +76,7 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
     }
 
     @Test
-    public void shouldLoadManagerWithHistoryAfterSaveTask() throws IOException {
+    public void should_Load_Manager_With_History_After_Save_Task() throws IOException {
         assertTrue(manager.getHistoryManager().getHistory().isEmpty());
 
         manager.getTask(7);
@@ -93,7 +88,7 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
     }
 
     @Test
-    public void shouldLoadManagerWithHistoryAfterDeleteEpicId1() throws IOException {
+    public void should_Load_Manager_With_History_After_Delete_Epic_Id_1() throws IOException {
         assertTrue(manager.getHistoryManager().getHistory().isEmpty());
 
         manager.getTask(7);

@@ -47,56 +47,17 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         Type taskType = new TypeToken<List<Task>>() {
         }.getType();
         ArrayList<Task> listOfTask = gson.fromJson(client.load("tasks"), taskType);
-        if (Objects.nonNull(listOfTask)) {
-            listOfTask.forEach((task) -> {
-                    int maxId = -1;
-                    if (task != null) {
-                        int id = task.getId();
-                        generationTaskId = id;
-                        //addTask(task);
-                        task.setId(id);
-                        getMapOfTasks().put(task.getId(), task);
-                        if (id > maxId) {
-                            maxId = id;
-                        }
-                    }
-                    generationTaskId = maxId + 1;
-            });
-        }
+        loadTasks(listOfTask);
 
         Type epicType = new TypeToken<List<Epic>>() {
         }.getType();
         ArrayList<Epic> listOfEpic = gson.fromJson(client.load("epics"), epicType);
-        if (Objects.nonNull(listOfEpic)) {
-            listOfEpic.forEach((epic) -> {
-                    int maxId = -1;
-                    int id = epic.getId();
-                    generationTaskId = id;
-                    epic.setId(id);
-                    getMapOfEpic().put(epic.getId(), epic);
-                    if (id > maxId) {
-                        maxId = id;
-                    }
-                    generationTaskId = maxId + 1;
-            });
-        }
+        loadTasks(listOfEpic);
 
         Type subTaskType = new TypeToken<List<SubTask>>() {
         }.getType();
         ArrayList<SubTask> listOfSubTask = gson.fromJson(client.load("subtasks"), subTaskType);
-        if (Objects.nonNull(listOfSubTask)) {
-            listOfSubTask.forEach((subTask) -> {
-                    int maxId = -1;
-                    int id = subTask.getId();
-                    generationTaskId = id;
-                    subTask.setId(id);
-                    getMapOfSubTasks().put(subTask.getId(), subTask);
-                    if (id > maxId) {
-                        maxId = id;
-                    }
-                    generationTaskId = maxId + 1;
-            });
-        }
+        loadTasks(listOfSubTask);
 
         Type historyType = new TypeToken<List<Integer>>() {
         }.getType();
@@ -118,15 +79,25 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        HTTPTaskManager that = (HTTPTaskManager) o;
-        return Objects.equals(getMapOfTasks(), that.getMapOfTasks())
-                && Objects.equals(getMapOfEpic(), that.getMapOfEpic())
-                && Objects.equals(getMapOfSubTasks(), that.getMapOfSubTasks())
-                && Objects.equals(getHistoryManager(), that.getHistoryManager());
+    private void loadTasks(ArrayList<? extends Task> list) {
+        if (Objects.nonNull(list)) {
+            list.forEach((task) -> {
+                int maxId = -1;
+                int id = task.getId();
+                generationTaskId = id;
+                task.setId(id);
+                if (task instanceof Epic) {
+                    getMapOfEpic().put(task.getId(), (Epic) task);
+                } else if (task instanceof SubTask) {
+                    getMapOfSubTasks().put(task.getId(), (SubTask) task);
+                } else {
+                    getMapOfTasks().put(task.getId(), task);
+                }
+                if (id > maxId) {
+                    maxId = id;
+                }
+                generationTaskId = maxId + 1;
+            });
+        }
     }
 }

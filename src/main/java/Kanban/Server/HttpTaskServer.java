@@ -22,11 +22,11 @@ public class HttpTaskServer {
     public final static int PORT = 8080;
     private final Gson gson;
     private final HttpServer server;
-    private final FileBackedTasksManager fbtm;
+    private final FileBackedTasksManager fileBackedTasksManager;
 
     public HttpTaskServer() throws IOException {
         gson = Managers.getGson();
-        this.fbtm = new FileBackedTasksManager(new File("Files" + File.separator + "Tasks.CSV"));
+        this.fileBackedTasksManager = new FileBackedTasksManager(new File("Files" + File.separator + "Tasks.CSV"));
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", this::handle);
     }
@@ -80,7 +80,7 @@ public class HttpTaskServer {
         String method = exchange.getRequestMethod();
 
         if ("GET".equals(method) && Objects.isNull(exchange.getRequestURI().getQuery())) {
-            String text = gson.toJson(fbtm.getPrioritizedTasks());
+            String text = gson.toJson(fileBackedTasksManager.getPrioritizedTasks());
             sendText(exchange, text);
         } else {
             System.out.println("не корректный запрос");
@@ -98,13 +98,13 @@ public class HttpTaskServer {
         switch (method) {
             case "GET": {
                 if (Objects.isNull(query)) {
-                    String text = gson.toJson(fbtm.getTasks());
+                    String text = gson.toJson(fileBackedTasksManager.getTasks());
                     sendText(exchange, text);
                 } else if (Pattern.matches("id=\\d+$", query)) {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        String text = gson.toJson(fbtm.getTask(id));
+                        String text = gson.toJson(fileBackedTasksManager.getTask(id));
                         sendText(exchange, text);
                     } catch (NumberFormatException | NullPointerException e) {
                         sendWrongId(exchange);
@@ -117,13 +117,13 @@ public class HttpTaskServer {
                 String body = readText(exchange);
                 Task newTask = gson.fromJson(body, Task.class); // TODO: exception
                 if (Objects.isNull(query)) {
-                    fbtm.addTask(newTask);
+                    fileBackedTasksManager.addTask(newTask);
                     sendAfterPost(exchange);
                 } else if (Pattern.matches("id=\\d+$", query)) {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        fbtm.updateTask(newTask, id);
+                        fileBackedTasksManager.updateTask(newTask, id);
                         sendAfterPost(exchange);
                     } catch (NumberFormatException | NullPointerException e) {
                         sendWrongId(exchange);
@@ -134,14 +134,14 @@ public class HttpTaskServer {
 
             case "DELETE": {
                 if (Objects.isNull(query)) {
-                    fbtm.deleteAllTasks();
+                    fileBackedTasksManager.deleteAllTasks();
                     sendAfterDelete(exchange);
                 } else if (Pattern.matches("id=\\d+$", query)) {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        if (fbtm.getMapOfTasks().containsKey(id)) {
-                            fbtm.deleteTask(id);
+                        if (fileBackedTasksManager.getMapOfTasks().containsKey(id)) {
+                            fileBackedTasksManager.deleteTask(id);
                             sendAfterDelete(exchange);
                         } else {
                             sendWrongId(exchange);
@@ -166,13 +166,13 @@ public class HttpTaskServer {
         switch (method) {
             case "GET": {
                 if (Objects.isNull(query)) {
-                    String text = gson.toJson(fbtm.getEpics());
+                    String text = gson.toJson(fileBackedTasksManager.getEpics());
                     sendText(exchange, text);
                 } else {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        String text = gson.toJson(fbtm.getEpic(id));
+                        String text = gson.toJson(fileBackedTasksManager.getEpic(id));
                         sendText(exchange, text);
                     } catch (NumberFormatException | NullPointerException e) {
                         sendWrongId(exchange);
@@ -185,14 +185,14 @@ public class HttpTaskServer {
                 String body = readText(exchange);
                 Epic newEpic = gson.fromJson(body, Epic.class); // TODO: exception
                 if (Objects.isNull(query)) {
-                    fbtm.addEpic(newEpic);
+                    fileBackedTasksManager.addEpic(newEpic);
                     sendAfterPost(exchange);
                 } else if (Pattern.matches("id=\\d+$", query)) {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        if (fbtm.getMapOfEpic().containsKey(id)) {
-                            fbtm.updateEpic(newEpic, id);
+                        if (fileBackedTasksManager.getMapOfEpic().containsKey(id)) {
+                            fileBackedTasksManager.updateEpic(newEpic, id);
                             sendAfterPost(exchange);
                         } else {
                             sendWrongId(exchange);
@@ -206,13 +206,13 @@ public class HttpTaskServer {
 
             case "DELETE": {
                 if (Objects.isNull(query)) {
-                    fbtm.deleteAllEpics();
+                    fileBackedTasksManager.deleteAllEpics();
                     sendAfterDelete(exchange);
                 } else {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        fbtm.deleteEpic(id);
+                        fileBackedTasksManager.deleteEpic(id);
                         sendAfterDelete(exchange);
                     } catch (NumberFormatException | NullPointerException e) {
                         sendWrongId(exchange);
@@ -234,13 +234,13 @@ public class HttpTaskServer {
         switch (method) {
             case "GET": {
                 if (Objects.isNull(query)) {
-                    String text = gson.toJson(fbtm.getSubTasks());
+                    String text = gson.toJson(fileBackedTasksManager.getSubTasks());
                     sendText(exchange, text);
                 } else {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        String text = gson.toJson(fbtm.getSubTask(id));
+                        String text = gson.toJson(fileBackedTasksManager.getSubTask(id));
                         sendText(exchange, text);
                     } catch (NumberFormatException | NullPointerException e) {
                         sendWrongId(exchange);
@@ -253,13 +253,13 @@ public class HttpTaskServer {
                 String body = readText(exchange);
                 SubTask newSubTask = gson.fromJson(body, SubTask.class); // TODO: exception
                 if (Objects.isNull(query)) {
-                    fbtm.addSubTask(newSubTask);
+                    fileBackedTasksManager.addSubTask(newSubTask);
                     sendAfterPost(exchange);
                 } else if (Pattern.matches("id=\\d+$", query)) {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        fbtm.updateSubTask(newSubTask, id);
+                        fileBackedTasksManager.updateSubTask(newSubTask, id);
                         sendAfterPost(exchange);
                     } catch (NumberFormatException | NullPointerException e) {
                         sendWrongId(exchange);
@@ -270,14 +270,14 @@ public class HttpTaskServer {
 
             case "DELETE": {
                 if (Objects.isNull(query)) {
-                    fbtm.deleteAllSubTasks();
+                    fileBackedTasksManager.deleteAllSubTasks();
                     sendAfterDelete(exchange);
                 } else {
                     String idString = query.substring(3);
                     try {
                         int id = Integer.parseInt(idString);
-                        if (fbtm.getMapOfSubTasks().containsKey(id)) {
-                            fbtm.deleteSubTask(id);
+                        if (fileBackedTasksManager.getMapOfSubTasks().containsKey(id)) {
+                            fileBackedTasksManager.deleteSubTask(id);
                             sendAfterDelete(exchange);
                         } else {
                             sendWrongId(exchange);
@@ -303,7 +303,7 @@ public class HttpTaskServer {
             String idString = query.substring(3);
             try {
                 int id = Integer.parseInt(idString);
-                String text = gson.toJson(fbtm.getSubtaskOfEpic(id));
+                String text = gson.toJson(fileBackedTasksManager.getSubtaskOfEpic(id));
                 sendText(exchange, text);
             } catch (NumberFormatException | NullPointerException e) {
                 sendWrongId(exchange);
@@ -317,7 +317,7 @@ public class HttpTaskServer {
         String method = exchange.getRequestMethod();
 
         if ("GET".equals(method) && Objects.isNull(exchange.getRequestURI().getQuery())) {
-            String text = gson.toJson(fbtm.getHistoryManager().getHistory());
+            String text = gson.toJson(fileBackedTasksManager.getHistoryManager().getHistory());
             sendText(exchange, text);
         } else {
             System.out.println("не корректный запрос");
