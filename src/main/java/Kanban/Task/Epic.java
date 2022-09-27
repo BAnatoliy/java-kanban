@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     private List<Integer> subTaskIds = new ArrayList<>();
@@ -69,26 +70,35 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        if(duration != null || startTime != null) {
+        if(duration != null && startTime != null) {
             return "Epic{" +
                     "id=" + id +
                     ", title='" + title + '\'' +
                     ", description='" + description + '\'' +
                     ", status=" + status +
                     ", duration=" + duration.toHours() + ":" + duration.toMinutesPart() +
-                    ", startTime=" + startTime.format(FORMATER) +
-                    ", endTime=" + getEndTime().format(FORMATER) +
+                    ", startTime=" + startTime.format(FORMATTER) +
+                    ", endTime=" + getEndTime().format(FORMATTER) +
                     '}';
-         } else {
+        } else {
             return "Epic{" +
                     "id=" + id +
                     ", title='" + title + '\'' +
                     ", description='" + description + '\'' +
                     ", status=" + status +
-                    ", duration= null" +
-                    ", startTime= null" +
-                    ", endTime= null" +
+                    ", duration=null" +
+                    ", startTime=null" +
+                    ", endTime=null" +
                     '}';
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subTaskIds, epic.subTaskIds) && Objects.equals(endTime, epic.endTime);
     }
 }

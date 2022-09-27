@@ -7,18 +7,20 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
-        LocalDateTime value = Objects.nonNull(localDateTime) ? localDateTime : LocalDateTime.now();
-        jsonWriter.value(value.format(Task.FORMATER));
+        if (localDateTime == null) {
+            jsonWriter.nullValue();
+        } else {
+            jsonWriter.value(localDateTime.format(Task.FORMATTER));
+        }
     }
 
     @Override
     public LocalDateTime read(JsonReader jsonReader) throws IOException {
-        return LocalDateTime.parse(jsonReader.nextString(), Task.FORMATER);
+        return LocalDateTime.parse(jsonReader.nextString(), Task.FORMATTER);
     }
 }

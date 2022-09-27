@@ -38,8 +38,6 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
                 "PT3H35M", "2022-02-01T15:50"));
         manager.addTask(new Task("Task 2", "description Task2", Status.DONE,
                 "PT1H35M", "2022-02-07T15:50"));
-
-
     }
 
     @AfterEach
@@ -101,4 +99,9 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager>{
         assertEquals(2, newManager.getHistoryManager().getHistory().size());
     }
 
+    @Test
+    public void should_Loaded_Manager_Be_Equals_Saved_Manager() {
+        HTTPTaskManager newManager = new HTTPTaskManager("http://localhost:8078");
+        assertEquals(manager, newManager);
+    }
 }

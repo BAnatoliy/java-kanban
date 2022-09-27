@@ -33,8 +33,8 @@ public class SubTask extends Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", duration=" + duration.toHours() + ":" + duration.toMinutesPart() +
-                ", startTime=" + startTime.format(FORMATER) +
-                ", endTime=" + getEndTime().format(FORMATER) +
+                ", startTime=" + startTime.format(FORMATTER) +
+                ", endTime=" + getEndTime().format(FORMATTER) +
                 '}';
     }
 }

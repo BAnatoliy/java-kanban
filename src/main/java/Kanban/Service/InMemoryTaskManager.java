@@ -42,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(sortTask);
     }
 
-    private void addTaskInMap(Task task) {
+    protected void addTaskInMap(Task task) {
         int taskId = generationTaskId++;
         task.setId(taskId);
         tasks.put(task.getId(), task);
@@ -64,7 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
     }
 
-    private boolean addSubTaskInMap(SubTask subTask) {
+    protected boolean addSubTaskInMap(SubTask subTask) {
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
 
@@ -89,7 +89,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private boolean taskValidationCheck(Task task) {
+    protected boolean taskValidationCheck(Task task) {
         boolean isBusyTime;
         for (Task taskFromSet : sortTask) {
             isBusyTime = !(taskFromSet.getStartTime().isAfter(task.getEndTime()) ||
@@ -274,7 +274,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(values);
     }
 
-    private void updateEpicTime (Epic epic) {
+    protected void updateEpicTime (Epic epic) {
         if (!epic.getSubTaskIds().isEmpty()) {
         LocalDateTime min = LocalDateTime.MAX;
         LocalDateTime max = LocalDateTime.MIN;
@@ -295,7 +295,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Определение статуса Эпика
-    private void updateEpicStatus(Epic epic) {
+    protected void updateEpicStatus(Epic epic) {
         int i = 0;
 
         for (SubTask subTask : subTasks.values()) {

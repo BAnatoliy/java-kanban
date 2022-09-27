@@ -15,7 +15,7 @@ public class Task {
     protected Status status;
     protected Duration duration;
     protected LocalDateTime startTime;
-    public final static DateTimeFormatter FORMATER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(String title, String description, Status status, String duration, String startTime) {
         this.title = title;
@@ -80,7 +80,9 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime);
+        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description)
+                && status == task.status && Objects.equals(duration, task.duration)
+                && Objects.equals(startTime, task.startTime);
     }
 
     @Override
@@ -96,8 +98,8 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", duration=" + duration.toHours() + ":" + duration.toMinutesPart() +
-                ", startTime=" + startTime.format(FORMATER) +
-                ", endTime=" + getEndTime().format(FORMATER) +
+                ", startTime=" + startTime.format(FORMATTER) +
+                ", endTime=" + getEndTime().format(FORMATTER) +
                 '}';
     }
 }

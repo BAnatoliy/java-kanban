@@ -44,6 +44,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
     }
 
     private void load() {
+        try {
         Type taskType = new TypeToken<List<Task>>() {
         }.getType();
         ArrayList<Task> listOfTask = gson.fromJson(client.load("tasks"), taskType);
@@ -58,7 +59,9 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }.getType();
         ArrayList<SubTask> listOfSubTask = gson.fromJson(client.load("subtasks"), subTaskType);
         loadTasks(listOfSubTask);
-
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
         Type historyType = new TypeToken<List<Integer>>() {
         }.getType();
         ArrayList<Integer> listOfHistoryId = gson.fromJson(client.load("history"), historyType);
@@ -79,25 +82,45 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }
     }
 
-    private void loadTasks(ArrayList<? extends Task> list) {
+    private void loadTasks(ArrayList<? extends Task> list) throws IOException {
+        int maxId = -1;
         if (Objects.nonNull(list)) {
-            list.forEach((task) -> {
-                int maxId = -1;
+            for (Task task : list) {
                 int id = task.getId();
-                generationTaskId = id;
                 task.setId(id);
                 if (task instanceof Epic) {
                     getMapOfEpic().put(task.getId(), (Epic) task);
+                    updateEpicStatus((Epic) task);
                 } else if (task instanceof SubTask) {
-                    getMapOfSubTasks().put(task.getId(), (SubTask) task);
+                    if(taskValidationCheck(task)) {
+                        getMapOfSubTasks().put(task.getId(), (SubTask) task);
+                        sortTask.add(task);
+                    }
                 } else {
-                    getMapOfTasks().put(task.getId(), task);
+                    if (taskValidationCheck(task)) {
+                        sortTask.add(task);
+                        getMapOfTasks().put(task.getId(), task);
+                    }
                 }
                 if (id > maxId) {
                     maxId = id;
                 }
+            }
+            if (maxId > generationTaskId) {
                 generationTaskId = maxId + 1;
-            });
+            }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        HTTPTaskManager that = (HTTPTaskManager) o;
+        return Objects.equals(getMapOfTasks(), that.getMapOfTasks())
+                && Objects.equals(getMapOfEpic(), that.getMapOfEpic())
+                && Objects.equals(getMapOfSubTasks(), that.getMapOfSubTasks())
+                && Objects.equals(getHistoryManager(), that.getHistoryManager());
     }
 }
